@@ -56,6 +56,11 @@ android {
 
     buildFeatures {
         compose true
+        buildConfig false
+        aidl false
+        renderScript false
+        resValues false
+        shaders false
     }
 
     composeOptions {
@@ -84,13 +89,13 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
 
     // Testing dependencies
-    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
-    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+    testImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
+    testImplementation "androidx.test.espresso:espresso-contrib:$rootProject.espressoVersion"
+    testImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoVersion"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
 
     // Compose testing dependencies
-    androidTestImplementation "androidx.compose.ui:ui-test:$rootProject.composeVersion"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$rootProject.composeVersion"
+    testImplementation "androidx.compose.ui:ui-test:$rootProject.composeVersion"
+    testImplementation "androidx.compose.ui:ui-test-junit4:$rootProject.composeVersion"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$rootProject.composeVersion"
 }
