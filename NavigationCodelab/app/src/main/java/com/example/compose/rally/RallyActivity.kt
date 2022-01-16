@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.accounts.AccountsBody
 import com.example.compose.rally.ui.accounts.SingleAccountBody
@@ -95,12 +96,12 @@ fun RallyApp() {
                         route = "$accountsName/{name}",
                         arguments = listOf(navArgument("name") {
                             type = NavType.StringType
-                        })
+                        }),
+                        deepLinks = listOf(navDeepLink { uriPattern = "rally://$accountsName/{name}" })
                 ) { entry ->
                     val accountName = entry.arguments?.getString("name")
                     val account = UserData.getAccount(accountName)
                     SingleAccountBody(account = account)
-
                 }
             }
         }
