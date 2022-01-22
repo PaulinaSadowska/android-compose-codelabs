@@ -20,43 +20,52 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.graphics.SolidColor
 
 @Composable
 fun CraneEditableUserInput(
-    hint: String,
-    caption: String? = null,
-    @DrawableRes vectorImageId: Int? = null,
-    onInputChanged: (String) -> Unit
+        hint: String,
+        caption: String? = null,
+        @DrawableRes vectorImageId: Int? = null,
+        onInputChanged: (String) -> Unit
 ) {
-    // TODO Codelab: Encapsulate this state in a state holder
-    var textState by remember { mutableStateOf(hint) }
-    val isHint = { textState == hint }
+    val textState = rememberEditableUserInputState(hint = hint)
 
     CraneBaseUserInput(
-        caption = caption,
-        tintIcon = { !isHint() },
-        showCaption = { !isHint() },
-        vectorImageId = vectorImageId
+            caption = caption,
+            tintIcon = { !textState.isHint },
+            showCaption = { !textState.isHint },
+            vectorImageId = vectorImageId
     ) {
         BasicTextField(
-            value = textState,
-            onValueChange = {
-                textState = it
-                if (!isHint()) onInputChanged(textState)
-            },
-            textStyle = if (isHint()) {
-                captionTextStyle.copy(color = LocalContentColor.current)
-            } else {
-                MaterialTheme.typography.body1.copy(color = LocalContentColor.current)
-            },
-            cursorBrush = SolidColor(LocalContentColor.current)
+                value = textState.text,
+                onValueChange = { value ->
+                    textState.text = value
+                    if (!textState.isHint) onInputChanged(textState.text)
+                },
+                textStyle = if (textState.isHint) {
+                    captionTextStyle.copy(color = LocalContentColor.current)
+                } else {
+                    MaterialTheme.typography.body1.copy(color = LocalContentColor.current)
+                },
+                cursorBrush = SolidColor(LocalContentColor.current)
         )
     }
+}
+
+@Composable
+fun rememberEditableUserInputState(hint: String): EditableUserInputState = remember(hint) {
+    EditableUserInputState(hint, hint)
+}
+
+class EditableUserInputState(
+        private val hint: String,
+        initialText: String
+) {
+    var text by mutableStateOf(initialText)
+
+    val isHint: Boolean
+        get() = text == hint
 }
