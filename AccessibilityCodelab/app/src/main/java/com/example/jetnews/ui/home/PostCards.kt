@@ -66,14 +66,14 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
             painter = painterResource(post.imageThumbId),
             contentDescription = null,
             modifier = Modifier
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                .size(40.dp, 40.dp)
-                .clip(MaterialTheme.shapes.small)
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    .size(40.dp, 40.dp)
+                    .clip(MaterialTheme.shapes.small)
         )
         Column(
-            Modifier
-                .weight(1f)
-                .padding(top = 16.dp, bottom = 16.dp)
+                Modifier
+                        .weight(1f)
+                        .padding(top = 16.dp, bottom = 16.dp)
         ) {
             Text(post.title, style = MaterialTheme.typography.subtitle1)
             Row(Modifier.padding(top = 4.dp)) {
@@ -95,8 +95,8 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                 imageVector = Icons.Default.Close,
                 contentDescription = stringResource(R.string.cd_show_fewer),
                 modifier = Modifier
-                    .clickable { openDialog = true }
-                    .size(24.dp)
+                        .clickable { openDialog = true }
+                        .size(24.dp)
             )
         }
     }
@@ -122,8 +122,8 @@ fun PostCardHistory(post: Post, navigateToArticle: (String) -> Unit) {
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier
-                        .padding(15.dp)
-                        .clickable { openDialog = false }
+                            .padding(15.dp)
+                            .clickable { openDialog = false }
                 )
             }
         )
@@ -140,7 +140,8 @@ fun PostCardPopular(
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.size(280.dp, 240.dp),
-        onClick = { navigateToArticle(post.id) }
+        onClick = { navigateToArticle(post.id) },
+            onClickLabel = stringResource(id = R.string.action_read_article)
     ) {
         Column {
 
@@ -149,8 +150,8 @@ fun PostCardPopular(
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
+                        .height(100.dp)
+                        .fillMaxWidth()
             )
 
             Column(modifier = Modifier.padding(16.dp)) {

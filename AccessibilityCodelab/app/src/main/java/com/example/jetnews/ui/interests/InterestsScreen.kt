@@ -24,16 +24,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,9 +58,9 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun InterestsScreen(
-    interestsRepository: InterestsRepository,
-    openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+        interestsRepository: InterestsRepository,
+        openDrawer: () -> Unit,
+        scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
@@ -78,11 +72,11 @@ fun InterestsScreen(
         coroutineScope.launch { interestsRepository.toggleTopicSelection(it) }
     }
     InterestsScreen(
-        topics = interestsRepository.topics,
-        selectedTopics = selectedTopics,
-        onTopicSelect = onTopicSelect,
-        openDrawer = openDrawer,
-        scaffoldState = scaffoldState
+            topics = interestsRepository.topics,
+            selectedTopics = selectedTopics,
+            onTopicSelect = onTopicSelect,
+            openDrawer = openDrawer,
+            scaffoldState = scaffoldState
     )
 }
 
@@ -97,42 +91,42 @@ fun InterestsScreen(
  */
 @Composable
 fun InterestsScreen(
-    topics: TopicsMap,
-    selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit,
-    openDrawer: () -> Unit,
-    scaffoldState: ScaffoldState,
+        topics: TopicsMap,
+        selectedTopics: Set<TopicSelection>,
+        onTopicSelect: (TopicSelection) -> Unit,
+        openDrawer: () -> Unit,
+        scaffoldState: ScaffoldState,
 ) {
     Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = {
-            InsetAwareTopAppBar(
-                title = { Text("Interests") },
-                navigationIcon = {
-                    IconButton(onClick = openDrawer) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_jetnews_logo),
-                            contentDescription = stringResource(R.string.cd_open_navigation_drawer)
-                        )
-                    }
-                }
-            )
-        }
+            scaffoldState = scaffoldState,
+            topBar = {
+                InsetAwareTopAppBar(
+                        title = { Text("Interests") },
+                        navigationIcon = {
+                            IconButton(onClick = openDrawer) {
+                                Icon(
+                                        painter = painterResource(R.drawable.ic_jetnews_logo),
+                                        contentDescription = stringResource(R.string.cd_open_navigation_drawer)
+                                )
+                            }
+                        }
+                )
+            }
     ) {
         LazyColumn(Modifier.navigationBarsPadding()) {
             topics.forEach { (section, topics) ->
                 item {
                     Text(
-                        text = section,
-                        modifier = Modifier
-                            .padding(16.dp),
-                        style = MaterialTheme.typography.subtitle1
+                            text = section,
+                            modifier = Modifier
+                                    .padding(16.dp),
+                            style = MaterialTheme.typography.subtitle1
                     )
                 }
                 items(topics) { topic ->
                     TopicItem(
-                        itemTitle = topic,
-                        selected = selectedTopics.contains(TopicSelection(section, topic))
+                            itemTitle = topic,
+                            selected = selectedTopics.contains(TopicSelection(section, topic))
                     ) { onTopicSelect(TopicSelection(section, topic)) }
                     TopicDivider()
                 }
@@ -151,30 +145,44 @@ fun InterestsScreen(
 @Composable
 private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
     val image = painterResource(R.drawable.placeholder_1_1)
+    val stateNotSubscribed = stringResource(R.string.state_not_subscribed)
+    val stateSubscribed = stringResource(R.string.state_subscribed)
     Row(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier
+                    .semantics {
+                        stateDescription = if (selected) {
+                            stateSubscribed
+                        } else {
+                            stateNotSubscribed
+                        }
+                    }
+                    .toggleable(
+                            value = selected,
+                            onValueChange = { onToggle() },
+                            role = Role.Checkbox
+                    )
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Image(
-            painter = image,
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .size(56.dp, 56.dp)
-                .clip(RoundedCornerShape(4.dp))
+                painter = image,
+                contentDescription = null,
+                modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(56.dp, 56.dp)
+                        .clip(RoundedCornerShape(4.dp))
         )
         Text(
-            text = itemTitle,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(16.dp),
-            style = MaterialTheme.typography.subtitle1
+                text = itemTitle,
+                modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(16.dp),
+                style = MaterialTheme.typography.subtitle1
         )
         Spacer(Modifier.weight(1f))
         Checkbox(
-            checked = selected,
-            onCheckedChange = { onToggle() },
-            modifier = Modifier.align(Alignment.CenterVertically)
+                checked = selected,
+                onCheckedChange = null,
+                modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }
@@ -185,8 +193,8 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
 @Composable
 private fun TopicDivider() {
     Divider(
-        modifier = Modifier.padding(start = 90.dp),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
+            modifier = Modifier.padding(start = 90.dp),
+            color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f)
     )
 }
 
@@ -198,8 +206,8 @@ private fun TopicDivider() {
 fun PreviewInterestsScreen() {
     JetnewsTheme {
         InterestsScreen(
-            interestsRepository = InterestsRepository(),
-            openDrawer = {}
+                interestsRepository = InterestsRepository(),
+                openDrawer = {}
         )
     }
 }
