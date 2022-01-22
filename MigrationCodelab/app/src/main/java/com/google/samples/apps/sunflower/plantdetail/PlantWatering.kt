@@ -13,6 +13,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.samples.apps.sunflower.R
 
 @Composable
@@ -44,7 +45,7 @@ fun PlantWatering(wateringInterval: Int) {
 @Preview(showBackground = true)
 @Composable
 private fun PlantWateringPreview() {
-    MaterialTheme {
+    MdcTheme {
         PlantWatering(7)
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.samples.apps.sunflower.R
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
@@ -42,6 +43,7 @@ fun PlantDetailContent(plant: Plant) {
     Column(Modifier.padding(dimensionResource(R.dimen.margin_normal))) {
         PlantName(plant.name)
         PlantWatering(plant.wateringInterval)
+        PlantDescription(plant.description)
     }
 }
 
@@ -49,7 +51,7 @@ fun PlantDetailContent(plant: Plant) {
 @Composable
 private fun PlantDetailContentPreview() {
     val plant = Plant("id", "Apple", "description", 3, 30, "")
-    MaterialTheme {
+    MdcTheme {
         PlantDetailContent(plant)
     }
 }
