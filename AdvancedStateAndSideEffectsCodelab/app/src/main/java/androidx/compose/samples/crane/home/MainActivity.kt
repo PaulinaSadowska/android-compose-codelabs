@@ -33,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 
 @AndroidEntryPoint
@@ -60,7 +61,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainScreen(onExploreItemClicked: OnExploreItemClicked) {
     Surface(color = MaterialTheme.colors.primary) {
-        var showLandingScreen by remember { mutableStateOf(true) }
+        var showLandingScreen by rememberSaveable { mutableStateOf(true) }
         if (showLandingScreen) {
             LandingScreen(onTimeout = { showLandingScreen = false })
         } else {

@@ -20,32 +20,34 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.samples.crane.ui.captionTextStyle
 import androidx.compose.ui.graphics.SolidColor
 
 @Composable
 fun CraneEditableUserInput(
-        hint: String,
+        state: EditableUserInputState = rememberEditableUserInputState(""),
         caption: String? = null,
         @DrawableRes vectorImageId: Int? = null,
-        onInputChanged: (String) -> Unit
 ) {
-    val textState = rememberEditableUserInputState(hint = hint)
-
     CraneBaseUserInput(
             caption = caption,
-            tintIcon = { !textState.isHint },
-            showCaption = { !textState.isHint },
+            tintIcon = { !state.isHint },
+            showCaption = { !state.isHint },
             vectorImageId = vectorImageId
     ) {
         BasicTextField(
-                value = textState.text,
+                value = state.text,
                 onValueChange = { value ->
-                    textState.text = value
-                    if (!textState.isHint) onInputChanged(textState.text)
+                    state.text = value
                 },
-                textStyle = if (textState.isHint) {
+                textStyle = if (state.isHint) {
                     captionTextStyle.copy(color = LocalContentColor.current)
                 } else {
                     MaterialTheme.typography.body1.copy(color = LocalContentColor.current)
@@ -56,7 +58,7 @@ fun CraneEditableUserInput(
 }
 
 @Composable
-fun rememberEditableUserInputState(hint: String): EditableUserInputState = remember(hint) {
+fun rememberEditableUserInputState(hint: String): EditableUserInputState = rememberSaveable(hint, saver = EditableUserInputState.Saver) {
     EditableUserInputState(hint, hint)
 }
 
@@ -68,4 +70,16 @@ class EditableUserInputState(
 
     val isHint: Boolean
         get() = text == hint
+
+    companion object {
+        val Saver: Saver<EditableUserInputState, *> = listSaver(
+                save = { listOf(it.hint, it.text) },
+                restore = {
+                    EditableUserInputState(
+                            hint = it[0],
+                            initialText = it[1],
+                    )
+                }
+        )
+    }
 }
